@@ -3,13 +3,13 @@
  * AML Disassembler version 20110623-64 [Jun 23 2011]
  * Copyright (c) 2000 - 2011 Intel Corporation
  * 
- * Disassembly of iASLH7ipKq.aml, Wed May  7 15:21:34 2014
+ * Disassembly of iASLEXzLSb.aml, Wed May  7 09:33:29 2014
  *
  * Original Table Header:
  *     Signature        "DSDT"
- *     Length           0x0000C555 (50517)
+ *     Length           0x0000C899 (51353)
  *     Revision         0x02
- *     Checksum         0x0B
+ *     Checksum         0x4A
  *     OEM ID           "LENOVO"
  *     OEM Table ID     "TP-GA   "
  *     OEM Revision     0x00002070 (8304)
@@ -17,7 +17,7 @@
  *     Compiler Version 0x20101013 (537923603)
  */
 
-DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
+DefinitionBlock ("iASLEXzLSb.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 {
     External (TNOT, MethodObj)    // 0 Arguments
     External (PDC7)
@@ -66,6 +66,28 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                 0x00
             }, Arg4)
         Return (Zero)
+    }
+
+    Method (B1B2, 2, NotSerialized)
+    {
+        Or (ShiftLeft (Arg1, 0x08), Arg0, Local0)
+        Return (Local0)
+    }
+
+    Method (B1B4, 4, NotSerialized)
+    {
+        Or (ShiftLeft (Arg1, 0x08), Arg0, Local0)
+        Or (ShiftLeft (Arg2, 0x10), Local0, Local0)
+        Or (ShiftLeft (Arg3, 0x18), Local0, Local0)
+        Return (Local0)
+    }
+
+    Method (L1L4, 4, NotSerialized)
+    {
+        Or (ShiftLeft (Arg1, 0x20), Arg0, Local0)
+        Or (ShiftLeft (Arg2, 0x40), Local0, Local0)
+        Or (ShiftLeft (Arg3, 0x60), Local0, Local0)
+        Return (Local0)
     }
 
     Name (SLID, Zero)
@@ -729,6 +751,53 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
         APMC,   8
     }
 
+    /*Field (MNVS, AnyAcc, NoLock, Preserve)
+    {
+                Offset (0xFC0), 
+        CMD,    8, 
+        ERR0,   8, 
+        ERR1,   8, 
+        ERR2,   8, 
+        ERR3,   8, 
+        AR40,   8, 
+        AR41,   8, 
+        AR42,   8, 
+        AR43,   8, 
+        AR10,   8, 
+        AR11,   8, 
+        AR12,   8, 
+        AR13,   8, 
+        AR20,   8, 
+        AR21,   8, 
+        AR22,   8, 
+        AR23,   8, 
+        AR30,   8, 
+        AR31,   8, 
+        AR32,   8, 
+        AR33,   8
+    }
+
+    Mutex (MSMI, 0x07)
+    Method (SMI, 5, NotSerialized)
+    {
+        Acquire (MSMI, 0xFFFF)
+        Store (Arg0, CMD)
+        Store (Arg1, B1B4(AR40,AR41,AR42,AR43))
+        Store (Arg2, B1B4(AR10,AR11,AR12,AR13))
+        Store (Arg3, B1B4(AR20,AR21,AR22,AR23))
+        Store (Arg4, B1B4(AR30,AR31,AR32,AR33))
+        Store (0xF5, APMC)
+        While (LEqual (B1B4 (ERR0, ERR1, ERR2, ERR3), One))
+        {
+            Sleep (0x64)
+            Store (0xF5, APMC)
+        }
+
+        Store (B1B4 (AR40, AR41, AR42, AR43), Local0)
+        Release (MSMI)
+        Return (Local0)
+    }*/
+    
     Field (MNVS, AnyAcc, NoLock, Preserve)
     {
                 Offset (0xFC0), 
@@ -760,6 +829,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
         Release (MSMI)
         Return (Local0)
     }
+
 
     Method (RPCI, 1, NotSerialized)
     {
@@ -3978,6 +4048,14 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                     {
                         Name (_HID, EisaId ("PNP0C0C"))
                     }
+
+                    Device (PNLF)
+                    {
+                        Name (_HID, EisaId ("APP0002"))
+                        Name (_CID, "backlight")
+                        Name (_UID, 0x0A)
+                        Name (_STA, 0x0B)
+                    }
                 }
 
                 OperationRegion (LPC0, PCI_Config, 0x40, 0xC0)
@@ -5613,6 +5691,8 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                                     }
                                 }
                             }
+
+                            Return (Zero)
                         }
                     }
 
@@ -6872,14 +6952,22 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                     Field (ECOR, ByteAcc, NoLock, Preserve)
                     {
                                 Offset (0xA0), 
-                        SBRC,   16, 
-                        SBFC,   16, 
-                        SBAE,   16, 
-                        SBRS,   16, 
-                        SBAC,   16, 
-                        SBVO,   16, 
-                        SBAF,   16, 
-                        SBBS,   16
+                        SRC0,   8, 
+                        BRC1,   8, 
+                        BFC0,   8, 
+                        BFC1,   8, 
+                        BAE0,   8, 
+                        BAE1,   8, 
+                        BRS0,   8, 
+                        BRS1,   8, 
+                        BAC0,   8, 
+                        BAC1,   8, 
+                        BVO0,   8, 
+                        BVO1,   8, 
+                        BAF0,   8, 
+                        BAF1,   8, 
+                        BBS0,   8, 
+                        BBS1,   8
                     }
 
                     Field (ECOR, ByteAcc, NoLock, Preserve)
@@ -6887,37 +6975,78 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                                 Offset (0xA0), 
                             ,   15, 
                         SBCM,   1, 
-                        SBMD,   16, 
-                        SBCC,   16
+                        BMD0,   8, 
+                        BMD1,   8, 
+                        BCC0,   8, 
+                        BCC1,   8
                     }
 
                     Field (ECOR, ByteAcc, NoLock, Preserve)
                     {
                                 Offset (0xA0), 
-                        SBDC,   16, 
-                        SBDV,   16, 
-                        SBOM,   16, 
-                        SBSI,   16, 
-                        SBDT,   16, 
-                        SBSN,   16
+                        BDC0,   8, 
+                        BDC1,   8, 
+                        BDV0,   8, 
+                        BDV1,   8, 
+                        BOM0,   8, 
+                        BOM1,   8, 
+                        BSI0,   8, 
+                        BSI1,   8, 
+                        BDT0,   8, 
+                        BDT1,   8, 
+                        BSN0,   8, 
+                        BSN1,   8
                     }
 
                     Field (ECOR, ByteAcc, NoLock, Preserve)
                     {
                                 Offset (0xA0), 
-                        SBCH,   32
+                        BCH0,   8, 
+                        BCH1,   8, 
+                        BCH2,   8, 
+                        BCH3,   8
                     }
 
                     Field (ECOR, ByteAcc, NoLock, Preserve)
                     {
                                 Offset (0xA0), 
-                        SBMN,   128
+                        BMN0,   8, 
+                        BMN1,   8, 
+                        BMN2,   8, 
+                        BMN3,   8, 
+                        BMN4,   8, 
+                        BMN5,   8, 
+                        BMN6,   8, 
+                        BMN7,   8, 
+                        BMN8,   8, 
+                        BMN9,   8, 
+                        BMNA,   8, 
+                        BMNB,   8, 
+                        BMNC,   8, 
+                        BMND,   8, 
+                        BMNE,   8, 
+                        BMNF,   8
                     }
 
                     Field (ECOR, ByteAcc, NoLock, Preserve)
                     {
                                 Offset (0xA0), 
-                        SBDN,   128
+                        BDN0,   8, 
+                        BDN1,   8, 
+                        BDN2,   8, 
+                        BDN3,   8, 
+                        BDN4,   8, 
+                        BDN5,   8, 
+                        BDN6,   8, 
+                        BDN7,   8, 
+                        BDN8,   8, 
+                        BDN9,   8, 
+                        BDNA,   8, 
+                        BDNB,   8, 
+                        BDNC,   8, 
+                        BDND,   8, 
+                        BDNE,   8, 
+                        BDNF,   8
                     }
 
                     Mutex (BATM, 0x07)
@@ -6934,11 +7063,11 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             Sleep (0x14)
                             If (Local7)
                             {
-                                Multiply (SBFC, 0x0A, Local1)
+                                Multiply (B1B2 (BFC0, BFC1), 0x0A, Local1)
                             }
                             Else
                             {
-                                Store (SBFC, Local1)
+                                Store (B1B2 (BFC0, BFC1), Local1)
                             }
 
                             Store (Local1, Index (Arg1, 0x02))
@@ -6946,11 +7075,11 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             Sleep (0x14)
                             If (Local7)
                             {
-                                Multiply (SBDC, 0x0A, Local0)
+                                Multiply (B1B2 (BDC0, BDC1), 0x0A, Local0)
                             }
                             Else
                             {
-                                Store (SBDC, Local0)
+                                Store (B1B2 (BDC0, BDC1), Local0)
                             }
 
                             Store (Local0, Index (Arg1, One))
@@ -6961,9 +7090,9 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             }
                             Else
                             {
-                                If (SBDV)
+                                If (B1B2 (BDV0, BDV1))
                                 {
-                                    Divide (0x00030D40, SBDV, Local2, Index (Arg1, 0x06))
+                                    Divide (0x00030D40, B1B2 (BDV0, BDV1), Local2, Index (Arg1, 0x06))
                                 }
                                 Else
                                 {
@@ -6971,8 +7100,8 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                                 }
                             }
 
-                            Store (SBDV, Index (Arg1, 0x04))
-                            Store (SBSN, Local0)
+                            Store (B1B2 (BDV0, BDV1), Index (Arg1, 0x04))
+                            Store (B1B2 (BSN0, BSN1), Local0)
                             Name (SERN, Buffer (0x06)
                             {
                                 "     "
@@ -6988,18 +7117,22 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             Store (SERN, Index (Arg1, 0x0A))
                             Or (Arg0, 0x06, HIID)
                             Sleep (0x14)
-                            Store (SBDN, Index (Arg1, 0x09))
+                            Store (L1L4 (B1B4 (BDN0, BDN1, BDN2, BDN3), B1B4 (BDN4, BDN5, 
+                                BDN6, BDN7), B1B4 (BDN8, BDN9, BDNA, BDNB), B1B4 (BDNC, BDND, BDNE, 
+                                BDNF)), Index (Arg1, 0x09))
                             Or (Arg0, 0x04, HIID)
                             Sleep (0x14)
                             Name (BTYP, Buffer (0x05)
                             {
                                 0x00, 0x00, 0x00, 0x00, 0x00
                             })
-                            Store (SBCH, BTYP)
+                            Store (B1B4 (BCH0, BCH1, BCH2, BCH3), BTYP)
                             Store (BTYP, Index (Arg1, 0x0B))
                             Or (Arg0, 0x05, HIID)
                             Sleep (0x14)
-                            Store (SBMN, Index (Arg1, 0x0C))
+                            Store (L1L4 (B1B4 (BMN0, BMN1, BMN2, BMN3), B1B4 (BMN4, BMN5, 
+                                BMN6, BMN7), B1B4 (BMN8, BMN9, BMNA, BMNB), B1B4 (BMNC, BMND, BMNE, 
+                                BMNF)), Index (Arg1, 0x0C))
                         }
                         Else
                         {
@@ -7070,17 +7203,17 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                                 Return (Arg3)
                             }
 
-                            Store (SBVO, Local3)
+                            Store (B1B2 (BVO0, BVO1), Local3)
                             If (Arg2)
                             {
-                                Multiply (SBRC, 0x0A, Local2)
+                                Multiply (B1B2 (SRC0, BRC1), 0x0A, Local2)
                             }
                             Else
                             {
-                                Store (SBRC, Local2)
+                                Store (B1B2 (SRC0, BRC1), Local2)
                             }
 
-                            Store (SBAC, Local1)
+                            Store (B1B2 (BAC0, BAC1), Local1)
                             If (LGreaterEqual (Local1, 0x8000))
                             {
                                 If (And (Local0, One))
@@ -7877,6 +8010,8 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                                 Notify (LID0, 0x80)
                             }
                         }
+
+                        Return (One)
                     }
 
                     Method (_Q2B, 0, NotSerialized)
@@ -7902,6 +8037,8 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                                 Notify (LID0, 0x80)
                             }
                         }
+
+                        Return (One)
                     }
 
                     Device (AC)
@@ -14284,95 +14421,99 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 
     Method (_PTS, 1, NotSerialized)
     {
-        If (LEqual (Arg0, 0x03))
+        If (LEqual (Arg0, 0x05)) {}
+        Else
         {
-            Store (0x53, P80H)
-        }
-
-        If (LEqual (Arg0, 0x04))
-        {
-            Store (0x54, P80H)
-        }
-
-        If (LEqual (Arg0, 0x05))
-        {
-            Store (0x55, P80H)
-        }
-
-        Store (One, Local0)
-        If (LEqual (Arg0, SPS))
-        {
-            Store (Zero, Local0)
-        }
-
-        If (LOr (LEqual (Arg0, Zero), LGreaterEqual (Arg0, 0x06)))
-        {
-            Store (Zero, Local0)
-        }
-
-        If (Local0)
-        {
-            Store (Arg0, SPS)
-            \_SB.PCI0.LPCB.EC0.HKEY.MHKE (Zero)
-            If (\_SB.PCI0.LPCB.EC0.KBLT)
-            {
-                UCMS (0x0D)
-            }
-
-            If (LEqual (Arg0, One))
-            {
-                Store (\_SB.PCI0.LPCB.EC0.HFNI, FNID)
-                Store (Zero, \_SB.PCI0.LPCB.EC0.HFNI)
-                Store (Zero, \_SB.PCI0.LPCB.EC0.HFSP)
-            }
-
             If (LEqual (Arg0, 0x03))
             {
-                VVPD (0x03)
-                TRAP ()
-                Store (\_SB.PCI0.LPCB.EC0.AC._PSR (), ACST)
+                Store (0x53, P80H)
             }
 
             If (LEqual (Arg0, 0x04))
             {
-                Store (0xF1, P80H)
-                TRAP ()
-                Store (0xF2, P80H)
-                \_SB.PCI0.LPCB.TPM.CMOR ()
-                Store (0xF3, P80H)
-                AWON (0x04)
+                Store (0x54, P80H)
             }
 
             If (LEqual (Arg0, 0x05))
             {
-                TRAP ()
-                \_SB.PCI0.LPCB.TPM.CMOR ()
-                AWON (0x05)
+                Store (0x55, P80H)
             }
 
-            If (WIN8)
+            Store (One, Local0)
+            If (LEqual (Arg0, SPS))
             {
-                Store (0xF4, P80H)
-                \_SB.PCI0.LPCB.EC0.BPTS (Arg0)
+                Store (Zero, Local0)
             }
 
-            Store (0xF5, P80H)
-            If (LGreaterEqual (Arg0, 0x04))
+            If (LOr (LEqual (Arg0, Zero), LGreaterEqual (Arg0, 0x06)))
             {
-                Store (Zero, \_SB.PCI0.LPCB.EC0.HWLB)
-            }
-            Else
-            {
-                Store (One, \_SB.PCI0.LPCB.EC0.HWLB)
+                Store (Zero, Local0)
             }
 
-            If (LNotEqual (Arg0, 0x05))
+            If (Local0)
             {
-                Store (One, \_SB.PCI0.LPCB.EC0.HCMU)
-            }
+                Store (Arg0, SPS)
+                \_SB.PCI0.LPCB.EC0.HKEY.MHKE (Zero)
+                If (\_SB.PCI0.LPCB.EC0.KBLT)
+                {
+                    UCMS (0x0D)
+                }
 
-            Store (0xF6, P80H)
-            \_SB.PCI0.LPCB.EC0.HKEY.WGPS (Arg0)
+                If (LEqual (Arg0, One))
+                {
+                    Store (\_SB.PCI0.LPCB.EC0.HFNI, FNID)
+                    Store (Zero, \_SB.PCI0.LPCB.EC0.HFNI)
+                    Store (Zero, \_SB.PCI0.LPCB.EC0.HFSP)
+                }
+
+                If (LEqual (Arg0, 0x03))
+                {
+                    VVPD (0x03)
+                    TRAP ()
+                    Store (\_SB.PCI0.LPCB.EC0.AC._PSR (), ACST)
+                }
+
+                If (LEqual (Arg0, 0x04))
+                {
+                    Store (0xF1, P80H)
+                    TRAP ()
+                    Store (0xF2, P80H)
+                    \_SB.PCI0.LPCB.TPM.CMOR ()
+                    Store (0xF3, P80H)
+                    AWON (0x04)
+                }
+
+                If (LEqual (Arg0, 0x05))
+                {
+                    TRAP ()
+                    \_SB.PCI0.LPCB.TPM.CMOR ()
+                    AWON (0x05)
+                }
+
+                If (WIN8)
+                {
+                    Store (0xF4, P80H)
+                    \_SB.PCI0.LPCB.EC0.BPTS (Arg0)
+                }
+
+                Store (0xF5, P80H)
+                If (LGreaterEqual (Arg0, 0x04))
+                {
+                    Store (Zero, \_SB.PCI0.LPCB.EC0.HWLB)
+                }
+                Else
+                {
+                    Store (One, \_SB.PCI0.LPCB.EC0.HWLB)
+                }
+
+                If (LNotEqual (Arg0, 0x05))
+                {
+                    Store (One, \_SB.PCI0.LPCB.EC0.HCMU)
+                }
+
+                Store (0xF6, P80H)
+                \_SB.PCI0.LPCB.EC0.HKEY.WGPS (Arg0)
+            }
         }
     }
 
