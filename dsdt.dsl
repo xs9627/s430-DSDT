@@ -35,6 +35,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
     External (\_SB_.PCI0.SAT0.SCND.GTME)
     External (\_SB_.PCI0.SAT0.PRIM.GTME)
 
+    //sonic DTGP
     Method (DTGP, 5, NotSerialized)
     {
         If (LEqual (Arg0, Buffer (0x10)
@@ -8820,6 +8821,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
             Device (VID)
             {
                 Name (_ADR, 0x00020000)
+                //sonic ig-platform-id
                 Method (_DSM, 4, NotSerialized)
                 {
                     Store (Package (0x08)
