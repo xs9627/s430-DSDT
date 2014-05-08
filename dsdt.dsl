@@ -3522,6 +3522,7 @@ DefinitionBlock ("iASLEXzLSb.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                 }
             }
 
+            //Sonic LPCB
             Device (LPCB)
             {
                 Name (_ADR, 0x001F0000)
@@ -4534,6 +4535,7 @@ DefinitionBlock ("iASLEXzLSb.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                     }
                 }
 
+                //Sonic ECO
                 Device (EC0)
                 {
                     Device (HKEY)
@@ -5103,6 +5105,7 @@ DefinitionBlock ("iASLEXzLSb.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                         }
                     }
 
+                    //Sonic 2014-5-8 12:35:43 Need check HWAK
                     OperationRegion (ECOR, EmbeddedControl, Zero, 0x0100)
                     Field (ECOR, ByteAcc, NoLock, Preserve)
                     {
