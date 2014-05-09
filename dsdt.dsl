@@ -13955,6 +13955,21 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                 Or (HCON, 0x02, HCON)
                 Or (HSTS, 0xFF, HSTS)
             }
+            Device (BUS0)
+            {
+                Name (_CID, "smbus")
+                Name (_ADR, Zero)
+                Device (DVL0)
+                {
+                    Name (_ADR, 0x57)
+                    Name (_CID, "diagsvault")
+                    Method (_DSM, 4, NotSerialized)
+                    {
+                        If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
+                        Return (Package() { "address", 0x57 })
+                    }
+                }
+            }
         }
     }
 
@@ -14219,7 +14234,8 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
     Method (_PTS, 1, NotSerialized)
     {
-        If (LEqual (Arg0, 0x03))
+        If (LNotEqual(Arg0,5)) {
+If (LEqual (Arg0, 0x03))
         {
             Store (0x53, P80H)
         }
@@ -14309,6 +14325,8 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
             Store (0xF6, P80H)
             \_SB.PCI0.LPCB.EC0.HKEY.WGPS (Arg0)
         }
+}
+
     }
 
     Name (WAKI, Package (0x02)
