@@ -741,7 +741,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
         PAR3,   32
     }
 
-    Mutex (MSMI, 0x07)
+    Mutex(MSMI, 0)
     Method (SMI, 5, NotSerialized)
     {
         Acquire (MSMI, 0xFFFF)
@@ -4052,58 +4052,24 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                 {
                     Name (_HID, EisaId ("PNP0103"))
                     Name (_UID, Zero)
-                    Name (BUF0, ResourceTemplate ()
-                    {
-                        IRQNoFlags ()
-                            {0}
-                        IRQNoFlags ()
-                            {8}
+                    Name (BUF0, ResourceTemplate()
+{
+    IRQNoFlags() { 0, 8, 11, 15 }
+
+                        
+                        
                         Memory32Fixed (ReadWrite,
                             0xFED00000,         // Address Base
                             0x00000400,         // Address Length
                             )
                     })
-                    Method (_STA, 0, NotSerialized)
+
+                    
+
+                    
+                    Name (_STA, 0x0F)
+                    Method (_CRS, 0, NotSerialized)
                     {
-                        If (LGreaterEqual (OSYS, 0x07D1))
-                        {
-                            If (HPAE)
-                            {
-                                Return (0x0F)
-                            }
-                        }
-                        Else
-                        {
-                            If (HPAE)
-                            {
-                                Return (0x0B)
-                            }
-                        }
-
-                        Return (Zero)
-                    }
-
-                    Method (_CRS, 0, Serialized)
-                    {
-                        If (HPAE)
-                        {
-                            CreateDWordField (BUF0, 0x04, HPT0)
-                            If (LEqual (HPAS, One))
-                            {
-                                Store (0xFED01000, HPT0)
-                            }
-
-                            If (LEqual (HPAS, 0x02))
-                            {
-                                Store (0xFED02000, HPT0)
-                            }
-
-                            If (LEqual (HPAS, 0x03))
-                            {
-                                Store (0xFED03000, HPT0)
-                            }
-                        }
-
                         Return (BUF0)
                     }
                 }
@@ -4215,8 +4181,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             0x01,               // Alignment
                             0x02,               // Length
                             )
-                        IRQNoFlags ()
-                            {2}
+                        
                     })
                 }
 
@@ -4382,8 +4347,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             0x01,               // Alignment
                             0x02,               // Length
                             )
-                        IRQNoFlags ()
-                            {8}
+                        
                     })
                 }
 
@@ -4404,8 +4368,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                             0x10,               // Alignment
                             0x04,               // Length
                             )
-                        IRQNoFlags ()
-                            {0}
+                        
                     })
                 }
 
@@ -4483,7 +4446,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 
                         Name (DHKC, Zero)
                         Name (DHKB, One)
-                        Mutex (XDHK, 0x07)
+                        Mutex(XDHK, 0)
                         Name (DHKH, Zero)
                         Name (DHKW, Zero)
                         Name (DHKS, Zero)
@@ -5991,7 +5954,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 
                     Scope (HKEY)
                     {
-                        Mutex (BFWM, 0x07)
+                        Mutex(BFWM, 0)
                         Method (MHCF, 1, NotSerialized)
                         {
                             Store (BFWC (Arg0), Local0)
@@ -10330,6 +10293,14 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                     Return (Zero)
                 }
             }
+            Device (IMEI)
+            {
+                Name (_ADR, 0x00160000)
+            }
+            Device (MCHC)
+            {
+                Name (_ADR, Zero)
+            }
         }
     }
 
@@ -10418,7 +10389,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
         }
     }
 
-    Mutex (MUTX, 0x00)
+    Mutex(MUTX, 0)
     OperationRegion (PRT0, SystemIO, 0x80, 0x04)
     Field (PRT0, DWordAcc, Lock, Preserve)
     {
