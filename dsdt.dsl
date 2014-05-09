@@ -9710,6 +9710,12 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                             Offset (0xBC), 
                     ASLS,   32
                 }
+OperationRegion (IGD2, PCI_Config, 0x10, 4)
+Field (IGD2, AnyAcc, NoLock, Preserve)
+{
+	BAR1,32,
+}
+
 
                 OperationRegion (IGDM, SystemMemory, ASLB, 0x2000)
                 Field (IGDM, AnyAcc, NoLock, Preserve)
@@ -14646,12 +14652,130 @@ If (LEqual (Arg0, 0x03))
     }
     Scope (\_SB)
     {
+        
+    }
+    Scope (\_SB)
+    {
         Device (PNLF)
         {
+            // normal PNLF declares (note some of this probably not necessary)
             Name (_HID, EisaId ("APP0002"))
             Name (_CID, "backlight")
-            Name (_UID, 0x0A)
+            Name (_UID, 10)
             Name (_STA, 0x0B)
+            //define hardware register access for brightness
+            // you can see BAR1 value in RW-Everything under Bus00,02 Intel VGA controler PCI
+            // Note: Not sure which one is right here... for now, going with BAR1 masked
+            //OperationRegion (BRIT, SystemMemory, Subtract(\_SB.PCI0.IGPU.BAR1, 4), 0xe1184)
+            OperationRegion (BRIT, SystemMemory, And(\_SB.PCI0.IGPU.BAR1, Not(0xF)), 0xe1184)
+            Field (BRIT, AnyAcc, Lock, Preserve)
+            {
+                Offset(0x48250),
+                LEV2, 32,
+                LEVL, 32,
+                Offset(0x70040),
+                P0BL, 32,
+                Offset(0xc8250),
+                LEVW, 32,
+                LEVX, 32,
+                Offset(0xe1180),
+                PCHL, 32,
+            }
+            // DEB1 special for setting KLVX at runtime...
+            //Method (DEB1, 1, NotSerialized)
+            //{
+            //    Store(Arg0, KLVX)
+            //}
+            Name(KPCH, 0)
+            // _INI deals with differences between native setting and desired
+            Method (_INI, 0, NotSerialized)
+            {
+                Store(PCHL, KPCH)
+                Store(ShiftRight(KLVX,16), Local0)
+                Store(ShiftRight(LEVX,16), Local1)
+                if (LNotEqual(Local0, Local1))
+                {
+                    Divide(Multiply(LEVL, Local0), Local1,, Local0)
+                    //Store(P0BL, Local1)
+                    //While(LEqual (P0BL, Local1)) {}
+                    Store(Local0, LEVL)
+                    Store(KLVX, LEVX)
+                }
+            }
+            // _BCM/_BQC: set/get for brightness level
+            Method (_BCM, 1, NotSerialized)
+            {
+                // initialize for consistent backlight level before/after sleep
+                if (LNotEqual(PCHL, KPCH)) { Store(KPCH, PCHL) }
+                If (LNotEqual(LEVW, 0x80000000)) { Store (0x80000000, LEVW) }
+                If (LNotEqual(LEVX, KLVX)) { Store (KLVX, LEVX) }
+                // store new backlight level
+                Store(Match(_BCL, MGE, Arg0, MTR, 0, 2), Local0)
+                If (LEqual(Local0, Ones)) { Subtract(SizeOf(_BCL), 1, Local0) }
+                If (LNotEqual(LEV2, 0x80000000)) { Store(0x80000000, LEV2) }
+                Store(DerefOf(Index(_BCL, Local0)), LEVL)
+            }
+            Method (_BQC, 0, NotSerialized)
+            {
+                Store(Match(_BCL, MGE, LEVL, MTR, 0, 2), Local0)
+                If (LEqual(Local0, Ones)) { Subtract(SizeOf(_BCL), 1, Local0) }
+                Return(DerefOf(Index(_BCL, Local0)))
+            }
+            Method (_DOS, 1, NotSerialized)
+            {
+                ^^PCI0.IGPU._DOS(Arg0)
+            }
+            // extended _BCM/_BQC for setting "in between" levels
+            Method (XBCM, 1, NotSerialized)
+            {
+                // initialize for consistent backlight level before/after sleep
+                if (LNotEqual(PCHL, KPCH)) { Store(KPCH, PCHL) }
+                If (LNotEqual(LEVW, 0x80000000)) { Store (0x80000000, LEVW) }
+                If (LNotEqual(LEVX, KLVX)) { Store (KLVX, LEVX) }
+                // store new backlight level
+                If (LGreater(Arg0, XRGH)) { Store(XRGH, Arg0) }
+                If (LAnd(Arg0, LLess(Arg0, XRGL))) { Store(XRGL, Arg0) }
+                If (LNotEqual(LEV2, 0x80000000)) { Store(0x80000000, LEV2) }
+                Store(Arg0, LEVL)
+            }
+            Method (XBQC, 0, NotSerialized)
+            {
+                Store(LEVL, Local0)
+                If (LGreater(Local0, XRGH)) { Store(XRGH, Local0) }
+                If (LAnd(Local0, LLess(Local0, XRGL))) { Store(XRGL, Local0) }
+                Return(Local0)
+            }
+            // Use XOPT=1 to disable smooth transitions
+            Name (XOPT, Zero)
+            // XRGL/XRGH: defines the valid range
+            Name (XRGL, 40)
+            Name (XRGH, 1808)
+            // KLVX is initialization value for LEVX
+            Name (KLVX, 0x7100000)
+            // _BCL: returns list of valid brightness levels
+            // first two entries describe ac/battery power levels
+            Name (_BCL, Package()
+            {
+                1808,
+                479,
+                0,
+                55, 55, 57, 59,
+                62, 66, 71, 77,
+                83, 91, 99, 108,
+                119, 130, 142, 154,
+                168, 183, 198, 214,
+                232, 250, 269, 289,
+                309, 331, 354, 377,
+                401, 426, 453, 479,
+                507, 536, 566, 596,
+                627, 660, 693, 727,
+                762, 797, 834, 872,
+                910, 949, 990, 1031,
+                1073, 1115, 1159, 1204,
+                1249, 1296, 1343, 1391,
+                1440, 1490, 1541, 1592,
+                1645, 1698, 1753, 1808,
+            })
         }
     }
 }
