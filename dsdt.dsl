@@ -3563,7 +3563,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                         }
 
                         Store (SRAH, ^PCI0.RID)
-                        Store (SRHE, ^PCI0.VID.RID)
+                        Store (SRHE, ^PCI0.IGPU.RID)
                         Store (SRU7, ^PCI0.EHC1.RID)
                         Store (SRU8, ^PCI0.EHC2.RID)
                         Store (SRLP, ^PCI0.LPCB.RID)
@@ -3981,13 +3981,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                     }
                     
                     //Sonic PNLF
-                    Device (PNLF)
-                     {
-                         Name (_HID, EisaId ("APP0002"))
-                         Name (_CID, "backlight")
-                         Name (_UID, 0x0A)
-                         Name (_STA, 0x0B)
-                     }
+                    
                 }
 
                 OperationRegion (LPC0, PCI_Config, 0x40, 0xC0)
@@ -4668,7 +4662,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                         {
                             If (LEqual (PLUX, Zero))
                             {
-                                ^^^^VID.VLOC (Zero)
+                                ^^^^IGPU.VLOC (Zero)
                             }
                         }
 
@@ -7705,7 +7699,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
                             If (NBCF)
                             {
-                                Notify (^^^VID.LCD0, 0x86)
+                                Notify (^^^IGPU.LCD0, 0x86)
                             }
                             Else
                             {
@@ -7731,7 +7725,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
                             If (NBCF)
                             {
-                                Notify (^^^VID.LCD0, 0x87)
+                                Notify (^^^IGPU.LCD0, 0x87)
                             }
                             Else
                             {
@@ -7754,7 +7748,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                         {
                             Add (BRLV, 0x02, Local0)
                             Store (BRTN, Local3)
-                            If (^^^VID.DRDY)
+                            If (^^^IGPU.DRDY)
                             {
                                 If (LEqual (Zero, Local0))
                                 {
@@ -7772,10 +7766,10 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                                 }
 
                                 Or (Local1, ShiftLeft (Local2, 0x09), Local2)
-                                ^^^VID.AINT (0x03, Local2)
+                                ^^^IGPU.AINT (0x03, Local2)
                                 Store (DerefOf (Index (DerefOf (Index (BRTB, Local3)), Local0)), 
                                     Local2)
-                                ^^^VID.AINT (One, Local2)
+                                ^^^IGPU.AINT (One, Local2)
                             }
                             Else
                             {
@@ -7809,7 +7803,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                         }
                         Else
                         {
-                            ^^^VID.VSWT ()
+                            ^^^IGPU.VSWT ()
                         }
                     }
 
@@ -7853,8 +7847,8 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                             ^HKEY.MHKQ (0x5002)
                             If (LEqual (PLUX, Zero))
                             {
-                                ^^^VID.GLIS (One)
-                                ^^^VID.VLOC (One)
+                                ^^^IGPU.GLIS (One)
+                                ^^^IGPU.VLOC (One)
                                 Notify (LID0, 0x80)
                             }
                         }
@@ -7877,7 +7871,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                             {
                                 If (VIGD)
                                 {
-                                    ^^^VID.GLIS (Zero)
+                                    ^^^IGPU.GLIS (Zero)
                                 }
 
                                 Notify (LID0, 0x80)
@@ -8781,7 +8775,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
             CreateBitField (VDDA, 0x0C, VSD4)
             CreateBitField (VDDA, 0x0D, VSD5)
             CreateBitField (VDDA, 0x0E, MSWT)
-            Device (VID)
+            Device (IGPU)
             {
                 Name (_ADR, 0x00020000)
                 //sonic ig-platform-id
@@ -10163,12 +10157,12 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                             }
                             Else
                             {
-                                Notify (VID, Arg1)
+                                Notify (IGPU, Arg1)
                             }
                         }
                     }
 
-                    Notify (VID, 0x80)
+                    Notify (IGPU, 0x80)
                     Return (Zero)
                 }
 
@@ -11252,9 +11246,9 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
         Method (_L06, 0, NotSerialized)
         {
-            If (\_SB.PCI0.VID.GSSE)
+            If (\_SB.PCI0.IGPU.GSSE)
             {
-                \_SB.PCI0.VID.GSCI ()
+                \_SB.PCI0.IGPU.GSCI ()
             }
             Else
             {
@@ -14399,7 +14393,7 @@ If (LEqual (Arg0, 0x03))
 
             If (VIGD)
             {
-                \_SB.PCI0.VID.GLIS (\_SB.LID0._LID ())
+                \_SB.PCI0.IGPU.GLIS (\_SB.LID0._LID ())
                 If (WVIS)
                 {
                     VBTD ()
@@ -14470,7 +14464,7 @@ If (LEqual (Arg0, 0x03))
             Store (0xEA, P80H)
             If (VIGD)
             {
-                \_SB.PCI0.VID.GLIS (\_SB.LID0._LID ())
+                \_SB.PCI0.IGPU.GLIS (\_SB.LID0._LID ())
                 If (WVIS)
                 {
                     VBTD ()
@@ -14528,7 +14522,7 @@ If (LEqual (Arg0, 0x03))
         VSLD (\_SB.LID0._LID ())
         If (VIGD)
         {
-            \_SB.PCI0.VID.GLIS (\_SB.LID0._LID ())
+            \_SB.PCI0.IGPU.GLIS (\_SB.LID0._LID ())
         }
 
         If (LLess (Arg0, 0x04))
@@ -14649,5 +14643,15 @@ If (LEqual (Arg0, 0x03))
         Or(Arg1, ShiftLeft(Local0, 8), Local0)
         Or(Arg0, ShiftLeft(Local0, 8), Local0)
         Return(Local0)
+    }
+    Scope (\_SB)
+    {
+        Device (PNLF)
+        {
+            Name (_HID, EisaId ("APP0002"))
+            Name (_CID, "backlight")
+            Name (_UID, 0x0A)
+            Name (_STA, 0x0B)
+        }
     }
 }
