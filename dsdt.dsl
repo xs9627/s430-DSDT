@@ -14336,7 +14336,8 @@ If (LEqual (Arg0, 0x03))
     })
     Method (_WAK, 1, NotSerialized)
     {
-        If (LEqual (Arg0, 0x03))
+        If (LOr(LLess(Arg0,1),LGreater(Arg0,5))) { Store(3,Arg0) }
+If (LEqual (Arg0, 0x03))
         {
             Store (0xE3, P80H)
         }
