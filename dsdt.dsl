@@ -8785,37 +8785,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
             {
                 Name (_ADR, 0x00020000)
                 //sonic ig-platform-id
-                Method (_DSM, 4, NotSerialized)
-                {
-                    Store (Package (0x08)
-                        {
-                            "device-id", 
-                            Buffer (0x04)
-                            {
-                                0x66, 0x01, 0x00, 0x00
-                            }, 
-
-                            "AAPL,ig-platform-id", 
-                            Buffer (0x04)
-                            {
-                                0x04, 0x00, 0x66, 0x01
-                            }, 
-
-                            "model", 
-                            Buffer (0x17)
-                            {
-                                "Intel HD 4000 Graphics"
-                            }, 
-
-                            "hda-gfx", 
-                            Buffer (0x0A)
-                            {
-                                "onboard-1"
-                            }
-                        }, Local0)
-                    DTGP (Arg0, Arg1, Arg2, Arg3, RefOf (Local0))
-                    Return (Local0)
-                }
+                
 
                 Name (RID, Zero)
                 OperationRegion (VPCG, PCI_Config, Zero, 0x0100)
@@ -10291,6 +10261,16 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
                     Store (One, ASLE)
                     Return (Zero)
+                }
+                Method (_DSM, 4, NotSerialized)
+                {
+                    If (LEqual (Arg2, Zero)) { Return (Buffer() { 0x03 } ) }
+                    Return (Package()
+                    {
+                        "AAPL,ig-platform-id", Buffer() { 0x04, 0x00, 0x66, 0x01 },
+                        "hda-gfx", Buffer() { "onboard-1" },
+                        "AAPL00,DualLink", Buffer() { 0x01, 0x00, 0x00, 0x00 },
+                    })
                 }
             }
             Device (IMEI)
