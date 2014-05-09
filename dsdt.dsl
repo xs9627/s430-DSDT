@@ -10446,106 +10446,9 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
     Method (PNOT, 0, Serialized)
     {
-        If (LGreater (TCNT, One))
-        {
-            If (And (PDC0, 0x08))
-            {
-                Notify (\_PR.CPU0, 0x80)
-                If (And (PDC0, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU0, 0x81)
-                }
-            }
+        
+        // nothing
 
-            If (And (PDC1, 0x08))
-            {
-                Notify (\_PR.CPU1, 0x80)
-                If (And (PDC1, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU1, 0x81)
-                }
-            }
-
-            If (And (PDC2, 0x08))
-            {
-                Notify (\_PR.CPU2, 0x80)
-                If (And (PDC2, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU2, 0x81)
-                }
-            }
-
-            If (And (PDC3, 0x08))
-            {
-                Notify (\_PR.CPU3, 0x80)
-                If (And (PDC3, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU3, 0x81)
-                }
-            }
-
-            If (And (PDC4, 0x08))
-            {
-                Notify (\_PR.CPU4, 0x80)
-                If (And (PDC4, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU4, 0x81)
-                }
-            }
-
-            If (And (PDC5, 0x08))
-            {
-                Notify (\_PR.CPU5, 0x80)
-                If (And (PDC5, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU5, 0x81)
-                }
-            }
-
-            If (And (PDC6, 0x08))
-            {
-                Notify (\_PR.CPU6, 0x80)
-                If (And (PDC6, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU6, 0x81)
-                }
-            }
-
-            If (And (PDC7, 0x08))
-            {
-                Notify (\_PR.CPU7, 0x80)
-                If (And (PDC7, 0x10))
-                {
-                    Sleep (0x64)
-                    Notify (\_PR.CPU7, 0x81)
-                }
-            }
-        }
-        Else
-        {
-            Notify (\_PR.CPU0, 0x80)
-            Sleep (0x64)
-            Notify (\_PR.CPU0, 0x81)
-        }
-
-        If (LEqual (ECON, One))
-        {
-            If (LGreaterEqual (OSYS, 0x07D6))
-            {
-                Notify (\_SB.PCI0.LPCB.EC0.BAT0, 0x81)
-            }
-            Else
-            {
-                Notify (\_SB.PCI0.LPCB.EC0.BAT0, 0x80)
-            }
-        }
     }
 
     Scope (_SB.PCI0)
@@ -10575,7 +10478,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                     Store (0x07D3, OSYS)
                 }
 
-                If (_OSI ("Windows 2006"))
+                If(LOr(_OSI("Darwin"),_OSI("Windows 2006")))
                 {
                     Store (0x07D6, OSYS)
                 }
