@@ -5730,7 +5730,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                         Return (Local1)
                     }
 
-                    Mutex (FAMX, 0x00)
+                    Mutex (FAMX, 0)
                     Method (FANG, 1, NotSerialized)
                     {
                         ShiftRight (Arg0, 0x08, Local0)
@@ -6895,7 +6895,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
                     }
 
-                    Mutex (BATM, 0x07)
+                    Mutex (BATM, 0)
                     Method (GBIF, 3, NotSerialized)
                     {
                         Acquire (BATM, 0xFFFF)
@@ -7778,7 +7778,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                         }
                     }
 
-                    Mutex (MCPU, 0x07)
+                    Mutex (MCPU, 0)
                     Method (_Q64, 0, NotSerialized)
                     {
                         If (^HKEY.MHKK (0x10))
@@ -8276,7 +8276,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                     INFD,   32
                 }
 
-                Mutex (PSMX, 0x00)
+                Mutex (PSMX, 0)
                 Method (PHS1, 1, NotSerialized)
                 {
                     Acquire (PSMX, 0xFFFF)
@@ -8757,7 +8757,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                 }
             }
 
-            Mutex (MDGS, 0x07)
+            Mutex (MDGS, 0)
             Name (VDEE, One)
             Name (VDDA, Buffer (0x02) {})
             CreateBitField (VDDA, Zero, VUPC)
