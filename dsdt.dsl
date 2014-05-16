@@ -7115,10 +7115,7 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                             "", 
                             ""
                         })
-                        Name (BT0P, Package (0x01)
-                        {
-                            Zero
-                        })
+                        Name (BT0P, Package (0x04) {})
                         Method (_STA, 0, NotSerialized)
                         {
                             If (ECIF)
