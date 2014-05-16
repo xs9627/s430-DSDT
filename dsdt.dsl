@@ -448,7 +448,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
         OSID,   8, 
         CPPS,   8, 
         CPUT,   8, 
-        ECIF,   0, 
+        ECIF,   8, 
         ORV1,   112
     }
 
@@ -1018,10 +1018,10 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 
     Method (PSIF, 2, NotSerialized)
     {
-        If (ECIF)
+        /*If (ECIF)
         {
             Return (Zero)
-        }
+        }*/
 
         Return (SMI (0x14, 0x05, Arg0, Arg1, Zero))
     }
@@ -5414,10 +5414,10 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                     Method (ECTT, 6, NotSerialized)
                     {
                         Name (T_0, Zero)
-                        If (ECIF)
+                        /*If (ECIF)
                         {
                             Return (One)
-                        }
+                        }*/
 
                         Store (Arg0, Local0)
                         Store (Arg1, Local1)
@@ -6127,10 +6127,10 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 
                         Method (GBDC, 0, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (0x04)
-                            }
+                            }*/
 
                             Store (Zero, Local0)
                             If (And (WGFL, 0x10))
@@ -6476,10 +6476,10 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
 
                         Method (PWMG, 0, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (Zero)
-                            }
+                            }*/
 
                             Store (PWMH, Local0)
                             ShiftLeft (Local0, 0x08, Local0)
@@ -6500,10 +6500,10 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
                     {
                         Method (NUMG, 0, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (0x03)
-                            }
+                            }*/
 
                             Store (One, Local0)
                             Return (Local0)
@@ -6992,10 +6992,10 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                     {
                         Method (SBIG, 1, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (Zero)
-                            }
+                            }*/
 
                             Return (BTIF ())
                         }
@@ -7118,10 +7118,10 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                         Name (BT0P, Package (0x04) {})
                         Method (_STA, 0, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (0x0F)
-                            }
+                            }*/
 
                             If (H8DR)
                             {
@@ -7178,10 +7178,10 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
                         Method (_BST, 0, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (BT0P)
-                            }
+                            }*/
 
                             XOr (DerefOf (Index (BT0I, Zero)), One, Local0)
                             Return (GBST (Zero, HB0S, Local0, BT0P))
@@ -7886,10 +7886,10 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                         })
                         Method (_PSR, 0, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (One)
-                            }
+                            }*/
 
                             If (H8DR)
                             {
@@ -7955,10 +7955,10 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
 
                         Method (BICG, 1, NotSerialized)
                         {
-                            If (ECIF)
+                            /*If (ECIF)
                             {
                                 Return (Zero)
-                            }
+                            }*/
 
                             Return (PSIF (0x03, Arg0))
                         }
