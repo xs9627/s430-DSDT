@@ -448,7 +448,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
         OSID,   8, 
         CPPS,   8, 
         CPUT,   8, 
-        ECIF,   8, 
+        ECIF,   0, 
         ORV1,   112
     }
 
