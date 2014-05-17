@@ -1,6 +1,6 @@
 S430-DSDT
-==================================================================
-1.Graphic fix.<br/>
-2.Battery status fix.<br/>
-3.BIOS reset fix.<br/>
-4.Shut down and restart fix.<br/>
+=====
+###Fix:
+1.Graphic HD4000.<br/>
+2.Battery status.<br/>
+3.Shut down and restart.<br/>
