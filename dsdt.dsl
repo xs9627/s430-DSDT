@@ -34,6 +34,7 @@ DefinitionBlock ("iASLH7ipKq.aml", "DSDT", 2, "LENOVO", "TP-GA   ", 0x00002070)
     External (\_SB_.PCI0.SAT0.SCND.MSTR)
     External (\_SB_.PCI0.SAT0.SCND.GTME)
     External (\_SB_.PCI0.SAT0.PRIM.GTME)
+    External (\_SB.PCI0.PEG0.PEGP._OFF, MethodObj)
 
     //sonic DTGP
     Method (DTGP, 5, NotSerialized)
@@ -8798,6 +8799,8 @@ BDNC,8,BDND,8,BDNE,8,BDNF,8
                 Method (_INI, 0, NotSerialized)
                 {
                     Store (^^^LID0._LID (), CLID)
+                    //added to turn nvidia/radeon off
+                    \_SB.PCI0.PEG0.PEGP._OFF()
                 }
 
                 Method (_PS0, 0, NotSerialized)
