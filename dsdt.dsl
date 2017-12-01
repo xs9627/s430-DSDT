@@ -14214,8 +14214,7 @@ Field (IGD2, AnyAcc, NoLock, Preserve)
 
     Method (_PTS, 1, NotSerialized)
     {
-        If (LNotEqual(Arg0,5)) {
-If (LEqual (Arg0, 0x03))
+        If (LEqual (Arg0, 0x03))
         {
             Store (0x53, P80H)
         }
@@ -14306,8 +14305,6 @@ If (LEqual (Arg0, 0x03))
             Store (0xF6, P80H)
             \_SB.PCI0.LPCB.EC0.HKEY.WGPS (Arg0)
         }
-}
-
     }
 
     Name (WAKI, Package (0x02)
